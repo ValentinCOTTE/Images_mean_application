@@ -1,4 +1,4 @@
-package mainPackage;
+package fr.lumeiretechnology.model;
 
 import java.util.ArrayList;
 import java.util.Scanner;

@@ -1,4 +1,4 @@
-package mainPackage;
+package fr.lumeiretechnology.model;
 
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
