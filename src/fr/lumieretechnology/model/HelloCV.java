@@ -1,4 +1,4 @@
-package fr.lumeiretechnology.model;
+package fr.lumieretechnology.model;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -32,10 +32,10 @@ public class HelloCV {
 //			double d = ((top - bot) * c);
 //			
 //			double r = d + bot;
-			
+
 //			System.out.println(r + "\t" + a + "\t" + b + "\t" + c + "\t" + d);
 
-			double r = ((top-bot)*((x-min)/(max-min)))+bot;
+			double r = ((top - bot) * ((x - min) / (max - min))) + bot;
 			System.out.println(r);
 		}
 

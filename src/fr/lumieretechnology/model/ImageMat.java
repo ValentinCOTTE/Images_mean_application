@@ -1,4 +1,4 @@
-package fr.lumeiretechnology.model;
+package fr.lumieretechnology.model;
 
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -8,19 +8,17 @@ public class ImageMat {
 
 	private String fileName;
 	private Mat mat;
-	
 
 	public ImageMat(String fileName, Mat mat) {
 		this.fileName = fileName;
 		this.mat = mat;
 	}
-	
+
 	public ImageMat(String fileName) {
 		this.fileName = fileName;
 		this.mat = loadImage(fileName);
 	}
 
-	
 	public String getFileName() {
 		return fileName;
 	}
@@ -54,7 +52,5 @@ public class ImageMat {
 
 		return mat;
 	}
-	
-	
-	
+
 }

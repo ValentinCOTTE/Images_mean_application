@@ -1,14 +1,18 @@
-package fr.lumeiretechnology.model;
+package fr.lumieretechnology.model;
 
 import java.util.ArrayList;
 
 import org.opencv.core.Core;
 
+import fr.lumieretechnology.view.MainFrame;
+
 public class App {
 	public static void main(String[] args) {
-		
+
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		
+
+		new MainFrame();
+
 		// Reading Images from the file and storing it in to a Matrix object
 		// IMAGES
 		ArrayList<ImageMat> images = new ArrayList<ImageMat>();
@@ -56,10 +60,9 @@ public class App {
 		blackImages.add(new ImageMat("noir/noir 12,35.tif"));
 		blackImages.add(new ImageMat("noir/noir 13.tif"));
 
-
 		System.out.println("Black Images Loaded ..........");
-		
+
 		Model.mean(images, blackImages);
-		
+
 	}
 }
