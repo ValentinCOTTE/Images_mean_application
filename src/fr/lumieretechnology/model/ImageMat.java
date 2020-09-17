@@ -36,7 +36,7 @@ public class ImageMat {
 	}
 
 	/**
-	 * Load a unique image file as a Mat.
+	 * Load a unique 16 bit image file as a Mat.
 	 * 
 	 * @param mat
 	 * @param fileName

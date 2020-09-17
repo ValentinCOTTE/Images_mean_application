@@ -15,7 +15,7 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 
 public class Model {
-	public static void mean(ArrayList<ImageMat> images,ArrayList<ImageMat> blackImages) {
+	public static void mean(ArrayList<ImageMat> images,ArrayList<ImageMat> blackImages, String saveFileLocation) {
 
 		// Loading the OpenCV core library
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -27,8 +27,8 @@ public class Model {
 
 		// ERROR CHECK
 		//their is as much images as blackImages
-		if (images.size()<blackImages.size()) System.out.println("ERROR : too mush black images ");
-		else if (images.size()>blackImages.size()) System.out.println("ERROR : too mush black images ");
+		if (images.size()<blackImages.size()) System.out.println("ERROR : too much black images ");
+		else if (images.size()>blackImages.size()) System.out.println("ERROR : not enough black images ");
 		
 		//images are same size between them
 		for (int i=0; i<images.size() ; i++ ) {
@@ -74,27 +74,97 @@ public class Model {
 
 
 		// Noises substraction
+		ArrayList<Mat> correctedMats = new ArrayList<Mat>();
+		for (int i = 0 ; i< mats.size(); i++) {
+			correctedMats.add(mats.get(i).clone());
+		}
+		
 		for (int i = 0; i < mats.size(); i++) {
 			System.out.println(files.get(i) + " : " + mats.get(i).cols() + " x " + mats.get(i).cols());
 			System.out.println(blackFiles.get(i) + " : " + blackMats.get(i).cols() + " x " + blackMats.get(i).cols());
-			Core.subtract(mats.get(i), blackMats.get(i), mats.get(i));
+			Core.subtract(mats.get(i), blackMats.get(i), correctedMats.get(i));
 		}
 
 		System.out.println("Black Substraction Done ..........");
 
 		// 32bits conversion
-		beginto32bits(mats);
+		beginto32bits(correctedMats);
 		System.out.println("32bits convertion Done ..........");
 
 		// calcul the mean image
-		System.out.println("Calcul mean.tif ............");
-		Mat meanMat = meanOf(mats);
+		System.out.println("Calcul " + saveFileLocation + " ............");
+		Mat meanMat = meanOf(correctedMats);
 //		System.out.println(meanMat.submat(0, 6, 0, 5).dump());
 
 		endto32bits(meanMat);
 //		System.out.println(meanMat.submat(0, 6, 0, 5).dump());
 
-		saveImage(meanMat, "mean.tif");
+		saveImage(meanMat, saveFileLocation);
+
+		System.out.println("DONE ............");
+
+		System.out.println("Press \"ENTER\" to exit...");
+		Scanner scanner = new Scanner(System.in);
+		scanner.nextLine();
+
+	}
+	
+	public static void meanWithoutBlackSubstraction(ArrayList<ImageMat> images, String saveFileLocation) {
+
+		// Loading the OpenCV core library
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+
+		// Instantiating the imagecodecs class
+		Imgcodecs imageCodecs = new Imgcodecs();
+
+
+
+		// ERROR CHECK
+		
+		//images are same size between them
+		for (int i=0; i<images.size() ; i++ ) {
+			for (int j = i+1; j < images.size(); j++) {
+				checkSizes(images.get(i), images.get(j));
+			}
+		}
+		
+		
+		
+		//CHARGE IMAGES ATTRIBUT INTO LISTS
+		
+		//List all files
+		ArrayList<String> files = new ArrayList<String>();
+		for (ImageMat image : images) {
+			files.add(image.getFileName());
+		}
+		
+		//List all mats
+		ArrayList<Mat> mats = new ArrayList<Mat>();
+		for (ImageMat image : images) {
+			mats.add(image.getMat());
+		}
+		
+		// Noises substraction
+				ArrayList<Mat> correctedMats = new ArrayList<Mat>();
+				for (int i = 0 ; i< mats.size(); i++) {
+					correctedMats.add(mats.get(i).clone());
+				}
+				
+				//No black substraction / noise correction on this mode
+
+		// 32bits conversion
+		beginto32bits(correctedMats);
+		System.out.println("32bits convertion Done ..........");
+
+		// calcul the mean image
+		System.out.println("Calcul " + saveFileLocation + " ............");
+		Mat meanMat = meanOf(correctedMats);
+//		System.out.println(meanMat.submat(0, 6, 0, 5).dump());
+
+		endto32bits(meanMat);
+//		System.out.println(meanMat.submat(0, 6, 0, 5).dump());
+
+		saveImage(meanMat, saveFileLocation);
 
 		System.out.println("DONE ............");
 
@@ -215,7 +285,7 @@ public class Model {
 		if(xA != xB || yA!=yB) {
 			System.out.println("Error : Sizes doesn't match between " + imageA.getFileName() +" and " + imageB.getFileName());
 			System.out.println(imageA.getFileName() + " : " + xA + " x " + yA);
-			System.out.println(imageA.getFileName() + " : " + xB + " x " + yB);
+			System.out.println(imageB.getFileName() + " : " + xB + " x " + yB);
 		}
 	}
 
