@@ -13,9 +13,8 @@ import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 
-
 public class Model {
-	public static void mean(ArrayList<ImageMat> images,ArrayList<ImageMat> blackImages, String saveFileLocation) {
+	public static void mean(ArrayList<ImageMat> images, ArrayList<ImageMat> blackImages, String saveFileLocation) {
 
 		// Loading the OpenCV core library
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -23,62 +22,57 @@ public class Model {
 		// Instantiating the imagecodecs class
 		Imgcodecs imageCodecs = new Imgcodecs();
 
-
-
 		// ERROR CHECK
-		//their is as much images as blackImages
-		if (images.size()<blackImages.size()) System.out.println("ERROR : too much black images ");
-		else if (images.size()>blackImages.size()) System.out.println("ERROR : not enough black images ");
-		
-		//images are same size between them
-		for (int i=0; i<images.size() ; i++ ) {
-			for (int j = i+1; j < images.size(); j++) {
+		// their is as much images as blackImages
+		if (images.size() < blackImages.size())
+			System.out.println("ERROR : too much black images ");
+		else if (images.size() > blackImages.size())
+			System.out.println("ERROR : not enough black images ");
+
+		// images are same size between them
+		for (int i = 0; i < images.size(); i++) {
+			for (int j = i + 1; j < images.size(); j++) {
 				checkSizes(images.get(i), images.get(j));
 			}
 		}
-		
-		//images are same size with their own blackImage
+
+		// images are same size with their own blackImage
 		for (int i = 0; i < images.size(); i++) {
 			checkSizes(images.get(i), blackImages.get(i));
 		}
-		
-		
-		
-		//CHARGE IMAGES ATTRIBUT INTO LISTS
-		
-		//List all files
+
+		// CHARGE IMAGES ATTRIBUT INTO LISTS
+
+		// List all files
 		ArrayList<String> files = new ArrayList<String>();
 		for (ImageMat image : images) {
 			files.add(image.getFileName());
 		}
-		
-		//List all mats
+
+		// List all mats
 		ArrayList<Mat> mats = new ArrayList<Mat>();
 		for (ImageMat image : images) {
 			mats.add(image.getMat());
 		}
-		
-		
-		//List all black files
+
+		// List all black files
 		ArrayList<String> blackFiles = new ArrayList<String>();
 		for (ImageMat blackImage : blackImages) {
 			blackFiles.add(blackImage.getFileName());
 		}
-		
-		//List all black mats
+
+		// List all black mats
 		ArrayList<Mat> blackMats = new ArrayList<Mat>();
 		for (ImageMat blackImage : blackImages) {
 			blackMats.add(blackImage.getMat());
 		}
 
-
-
 		// Noises substraction
 		ArrayList<Mat> correctedMats = new ArrayList<Mat>();
-		for (int i = 0 ; i< mats.size(); i++) {
+		for (int i = 0; i < mats.size(); i++) {
 			correctedMats.add(mats.get(i).clone());
 		}
-		
+
 		for (int i = 0; i < mats.size(); i++) {
 			System.out.println(files.get(i) + " : " + mats.get(i).cols() + " x " + mats.get(i).cols());
 			System.out.println(blackFiles.get(i) + " : " + blackMats.get(i).cols() + " x " + blackMats.get(i).cols());
@@ -108,7 +102,7 @@ public class Model {
 		scanner.nextLine();
 
 	}
-	
+
 	public static void meanWithoutBlackSubstraction(ArrayList<ImageMat> images, String saveFileLocation) {
 
 		// Loading the OpenCV core library
@@ -117,40 +111,36 @@ public class Model {
 		// Instantiating the imagecodecs class
 		Imgcodecs imageCodecs = new Imgcodecs();
 
-
-
 		// ERROR CHECK
-		
-		//images are same size between them
-		for (int i=0; i<images.size() ; i++ ) {
-			for (int j = i+1; j < images.size(); j++) {
+
+		// images are same size between them
+		for (int i = 0; i < images.size(); i++) {
+			for (int j = i + 1; j < images.size(); j++) {
 				checkSizes(images.get(i), images.get(j));
 			}
 		}
-		
-		
-		
-		//CHARGE IMAGES ATTRIBUT INTO LISTS
-		
-		//List all files
+
+		// CHARGE IMAGES ATTRIBUT INTO LISTS
+
+		// List all files
 		ArrayList<String> files = new ArrayList<String>();
 		for (ImageMat image : images) {
 			files.add(image.getFileName());
 		}
-		
-		//List all mats
+
+		// List all mats
 		ArrayList<Mat> mats = new ArrayList<Mat>();
 		for (ImageMat image : images) {
 			mats.add(image.getMat());
 		}
-		
+
 		// Noises substraction
-				ArrayList<Mat> correctedMats = new ArrayList<Mat>();
-				for (int i = 0 ; i< mats.size(); i++) {
-					correctedMats.add(mats.get(i).clone());
-				}
-				
-				//No black substraction / noise correction on this mode
+		ArrayList<Mat> correctedMats = new ArrayList<Mat>();
+		for (int i = 0; i < mats.size(); i++) {
+			correctedMats.add(mats.get(i).clone());
+		}
+
+		// No black substraction / noise correction on this mode
 
 		// 32bits conversion
 		beginto32bits(correctedMats);
@@ -252,16 +242,16 @@ public class Model {
 	 * @return mean value
 	 */
 	public static Mat meanOf(ArrayList<Mat> mats) {
-		
+
 		Mat matrix = mats.get(0).clone();
-		
+
 		for (int i = 1; i < mats.size(); i++) {
 			Core.add(matrix, mats.get(i), matrix);
 		}
-		
+
 		double size = mats.size();
 		Core.divide(matrix, Scalar.all(size), matrix);
-		
+
 //		System.out.println(mats.get(0).submat(0, 6, 0, 5).dump());
 //		System.out.println(mats.get(1).submat(0, 6, 0, 5).dump());
 //		System.out.println(mats.get(2).submat(0, 6, 0, 5).dump());
@@ -271,19 +261,20 @@ public class Model {
 //		System.out.println(mats.get(6).submat(0, 6, 0, 5).dump());
 //		
 //		System.out.println(matrix.submat(0, 6, 0, 5).dump());
-		
+
 		return matrix;
 	}
-	
+
 	public static void checkSizes(ImageMat imageA, ImageMat imageB) {
 		int xA = imageA.getMat().cols();
 		int yA = imageA.getMat().rows();
-		
+
 		int xB = imageB.getMat().cols();
 		int yB = imageB.getMat().rows();
-		
-		if(xA != xB || yA!=yB) {
-			System.out.println("Error : Sizes doesn't match between " + imageA.getFileName() +" and " + imageB.getFileName());
+
+		if (xA != xB || yA != yB) {
+			System.out.println(
+					"Error : Sizes doesn't match between " + imageA.getFileName() + " and " + imageB.getFileName());
 			System.out.println(imageA.getFileName() + " : " + xA + " x " + yA);
 			System.out.println(imageB.getFileName() + " : " + xB + " x " + yB);
 		}

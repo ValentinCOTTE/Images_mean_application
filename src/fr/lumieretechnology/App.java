@@ -1,4 +1,4 @@
-package fr.lumieretechnology.model;
+package fr.lumieretechnology;
 
 import java.util.ArrayList;
 

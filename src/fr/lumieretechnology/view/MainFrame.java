@@ -1,6 +1,7 @@
 package fr.lumieretechnology.view;
 
 import java.awt.BorderLayout;
+import java.awt.Button;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
@@ -11,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 
+import javax.sound.sampled.CompoundControl;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -29,50 +31,59 @@ import javax.swing.filechooser.FileFilter;
 
 import org.opencv.core.Core;
 
+import fr.lumieretechnology.controller.BlackImageButtonListener;
 import fr.lumieretechnology.controller.ImageButton;
+import fr.lumieretechnology.controller.ImageButtonListener;
 import fr.lumieretechnology.model.ImageMat;
 import fr.lumieretechnology.model.Model;
 
 public class MainFrame {
-	private JFrame mainJFrame = new JFrame("Images Mean App");
-	private BorderLayout mainBorderLayout = new BorderLayout();
-	private JPanel scrollJPanel = new JPanel();
-	private JScrollPane scroll = new JScrollPane(scrollJPanel);
-	private BorderLayout scrollBorderLayout = new BorderLayout();
+
+	public JFrame mainJFrame = new JFrame("Images Mean App");
+	public BorderLayout mainBorderLayout = new BorderLayout();
+	public JPanel scrollJPanel = new JPanel();
+	public JScrollPane scroll = new JScrollPane(scrollJPanel);
+	public BorderLayout scrollBorderLayout = new BorderLayout();
 
 	// NORTH
-	private JMenuBar menuBar = new JMenuBar();
-	private JMenu fileJMenu = new JMenu("File");
-	private JMenuItem addItem = new JMenuItem("add...");
-	private JMenuItem addBlackItem = new JMenuItem("add black...");
-	private JMenuItem saveToItem = new JMenuItem("Save to...");
-	private JMenu optionJMenu = new JMenu("Option");
-	private JCheckBoxMenuItem blackSubstractCorrectionItem = new JCheckBoxMenuItem("Black substract correction", true);
-	private JMenu helpJMenu = new JMenu("Help");
-	private JMenuItem aboutItem = new JMenuItem("About");
-	private JMenuItem noticeItem = new JMenuItem("Notice");
+	public JMenuBar menuBar = new JMenuBar();
+	public JMenu fileJMenu = new JMenu("File");
+	public JMenuItem addItem = new JMenuItem("add...");
+	public JMenuItem addBlackItem = new JMenuItem("add black...");
+	public JMenuItem saveToItem = new JMenuItem("Save to...");
+	public JMenu optionJMenu = new JMenu("Option");
+	public JCheckBoxMenuItem blackSubstractCorrectionItem = new JCheckBoxMenuItem("Black substract correction", true);
+	public JMenu helpJMenu = new JMenu("Help");
+	public JMenuItem aboutItem = new JMenuItem("About");
+	public JMenuItem noticeItem = new JMenuItem("Notice");
 
-	// WEST
-	private JPanel imagesJPanel = new JPanel();
-	private GridBagLayout imagesBagLayout = new GridBagLayout();
-	private JLabel imagesJLabel = new JLabel("Images");
-	private ArrayList<ImageButton> imagesImageButtons = new ArrayList<ImageButton>();
+	// CENTER-WEST
+	public JPanel imagesJPanel = new JPanel();
+	public GridBagLayout imagesBagLayout = new GridBagLayout();
+	public JLabel imagesJLabel = new JLabel("Images");
+	public ArrayList<ImageButton> imagesImageButtons = new ArrayList<ImageButton>();
+	public GridBagConstraints imagesJLabelConstraints = new GridBagConstraints();
+	public GridBagConstraints imagesButtonConstraints = new GridBagConstraints();
 
-	// CENTER
-	private JPanel blackImagesJPanel = new JPanel();
-	private GridBagLayout blackImagesBagLayout = new GridBagLayout();
-	private JLabel blackImagesJLabel = new JLabel("Black Images");
-	private ArrayList<ImageButton> blackImagesImageButtons = new ArrayList<ImageButton>();
 
+	// CENTER-EAST
+	public JPanel blackImagesJPanel = new JPanel();
+	public GridBagLayout blackImagesBagLayout = new GridBagLayout();
+	public JLabel blackImagesJLabel = new JLabel("Black Images");
+	public ArrayList<ImageButton> blackImagesImageButtons = new ArrayList<ImageButton>();
+	public GridBagConstraints blackImagesJLabelConstraints = new GridBagConstraints();
+	public GridBagConstraints blackImagesButtonConstraints = new GridBagConstraints();
+
+	
 	// EAST
-	private JPanel resultJPanel = new JPanel();
-	private GridBagLayout resultBagLayout = new GridBagLayout();
-	private JLabel meanLocationJLabel = new JLabel("Mean Location");
-	private JButton fileChooserJButton = new JButton("...");
-	private JTextField meanLocationJTextField = new JTextField();
-	private JButton saveJButton = new JButton("Save");
+	public JPanel resultJPanel = new JPanel();
+	public GridBagLayout resultBagLayout = new GridBagLayout();
+	public JLabel meanLocationJLabel = new JLabel("Mean Location");
+	public JButton fileChooserJButton = new JButton("...");
+	public JTextField meanLocationJTextField = new JTextField();
+	public JButton saveJButton = new JButton("Save");
 
-	private File currentDirectory = null;
+	public File currentDirectory = null;
 
 	public MainFrame() {
 		mainJFrame.setTitle("Images_mean_application");
@@ -118,13 +129,13 @@ public class MainFrame {
 		menuBar.add(optionJMenu);
 		optionJMenu.add(blackSubstractCorrectionItem);
 		blackSubstractCorrectionItem.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				for (ImageButton blackImageButton : blackImagesImageButtons) {
 					blackImageButton.setEnabled(blackSubstractCorrectionItem.isSelected());
 				}
-				
+
 			}
 		});
 
@@ -143,7 +154,7 @@ public class MainFrame {
 		imagesJPanel.setLayout(imagesBagLayout);
 
 		// Label
-		GridBagConstraints imagesJLabelConstraints = new GridBagConstraints();
+		
 		imagesJLabelConstraints.gridx = 0;
 		imagesJLabelConstraints.fill = GridBagConstraints.BOTH;
 		imagesJLabelConstraints.anchor = GridBagConstraints.CENTER;
@@ -152,7 +163,6 @@ public class MainFrame {
 		imagesJPanel.add(imagesJLabel, imagesJLabelConstraints);
 
 		// Button initialization
-		GridBagConstraints imagesButtonConstraints = new GridBagConstraints();
 		imagesButtonConstraints.gridx = 0;
 		imagesButtonConstraints.anchor = GridBagConstraints.CENTER;
 		imagesButtonConstraints.insets = new Insets(10, 0, 10, 0);
@@ -160,50 +170,7 @@ public class MainFrame {
 		imagesImageButtons.add(new ImageButton("+", 0));
 		imagesJPanel.add(imagesImageButtons.get(0), imagesButtonConstraints);
 
-		imagesImageButtons.get(0).addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JFileChooser fChooser = new JFileChooser(currentDirectory);
-				fChooser.setFileFilter(new FileFilter() {
-
-					@Override
-					public String getDescription() {
-						return "TIF images (.tif)";
-					}
-
-					@Override
-					public boolean accept(File f) {
-						if (f.isDirectory()) {
-							return true;
-						} else {
-							String fileName = f.getName().toLowerCase();
-							return fileName.endsWith(".tif") || fileName.endsWith(".tiff");
-						}
-					}
-				});
-				int returnVal = fChooser.showOpenDialog(mainJFrame);
-				File file = fChooser.getSelectedFile();
-				currentDirectory = file.getParentFile();
-
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					ImageButton button = (ImageButton) e.getSource();
-					button.addImage(file.getAbsolutePath());
-					button.setText(file.getName());
-
-					if (button.getIndex() == imagesImageButtons.size() - 1) {
-						ImageButton newLastButton = new ImageButton("+", imagesImageButtons.size());
-						newLastButton.addActionListener(this);
-						imagesImageButtons.add(newLastButton);
-						imagesJPanel.add(imagesImageButtons.get(imagesImageButtons.size() - 1),
-								imagesButtonConstraints);
-					}
-
-				}
-				mainJFrame.repaint();
-				mainJFrame.revalidate();
-
-			}
-		});
+		imagesImageButtons.get(0).addActionListener(new ImageButtonListener(this));
 
 	}
 
@@ -218,7 +185,6 @@ public class MainFrame {
 		blackImagesJPanel.setLayout(blackImagesBagLayout);
 
 		// Label
-		GridBagConstraints blackImagesJLabelConstraints = new GridBagConstraints();
 		blackImagesJLabelConstraints.gridx = 0;
 		blackImagesJLabelConstraints.fill = GridBagConstraints.BOTH;
 		blackImagesJLabelConstraints.anchor = GridBagConstraints.CENTER;
@@ -227,7 +193,6 @@ public class MainFrame {
 		blackImagesJPanel.add(blackImagesJLabel, blackImagesJLabelConstraints);
 
 		// Button initialization
-		GridBagConstraints blackImagesButtonConstraints = new GridBagConstraints();
 		blackImagesButtonConstraints.gridx = 0;
 		blackImagesButtonConstraints.anchor = GridBagConstraints.CENTER;
 		blackImagesButtonConstraints.insets = new Insets(10, 0, 10, 0);
@@ -235,50 +200,7 @@ public class MainFrame {
 		blackImagesImageButtons.add(new ImageButton("+", 0));
 		blackImagesJPanel.add(blackImagesImageButtons.get(0), blackImagesButtonConstraints);
 
-		blackImagesImageButtons.get(0).addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JFileChooser fChooser = new JFileChooser(currentDirectory);
-				fChooser.setFileFilter(new FileFilter() {
-
-					@Override
-					public String getDescription() {
-						return "TIF images (.tif)";
-					}
-
-					@Override
-					public boolean accept(File f) {
-						if (f.isDirectory()) {
-							return true;
-						} else {
-							String fileName = f.getName().toLowerCase();
-							return fileName.endsWith(".tif") || fileName.endsWith(".tiff");
-						}
-					}
-				});
-				int returnVal = fChooser.showOpenDialog(mainJFrame);
-				File file = fChooser.getSelectedFile();
-				currentDirectory = file.getParentFile();
-
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					ImageButton button = (ImageButton) e.getSource();
-					button.addImage(file.getAbsolutePath());
-					button.setText(file.getName());
-
-					if (button.getIndex() == blackImagesImageButtons.size() - 1) {
-						ImageButton newLastButton = new ImageButton("+", blackImagesImageButtons.size());
-						newLastButton.addActionListener(this);
-						blackImagesImageButtons.add(newLastButton);
-						blackImagesJPanel.add(blackImagesImageButtons.get(blackImagesImageButtons.size() - 1),
-								blackImagesButtonConstraints);
-					}
-
-				}
-				mainJFrame.repaint();
-				mainJFrame.revalidate();
-
-			}
-		});
+		blackImagesImageButtons.get(0).addActionListener(new BlackImageButtonListener(this));
 
 		blackImagesImageButtons.get(0).setEnabled(blackSubstractCorrectionItem.isSelected());
 
@@ -322,7 +244,7 @@ public class MainFrame {
 					}
 				});
 				fChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				fChooser.setDialogTitle("Specify a file to save");
+				fChooser.setDialogTitle("Save location");
 				fChooser.setSelectedFile(new File("mean.tif"));
 				int returnValue = fChooser.showSaveDialog(mainJFrame);
 
