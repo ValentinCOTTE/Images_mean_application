@@ -59,6 +59,7 @@ public class BlackImageButtonListener implements ActionListener {
 				if (button.getIndex() == gui.blackImagesImageButtons.size() - 1) {
 					ImageButton newLastButton = new ImageButton("+", gui.blackImagesImageButtons.size());
 					newLastButton.addActionListener(this);
+					newLastButton.addMouseListener(new BlackImageButtonMouseListener(gui));
 					gui.blackImagesImageButtons.add(newLastButton);
 					gui.blackImagesJPanel.add(gui.blackImagesImageButtons.get(gui.blackImagesImageButtons.size() - 1),
 							gui.blackImagesButtonConstraints);
@@ -74,6 +75,7 @@ public class BlackImageButtonListener implements ActionListener {
 				if (lastButton.getIndex() == gui.blackImagesImageButtons.size() - 1) {
 					ImageButton newLastButton = new ImageButton("+", gui.blackImagesImageButtons.size());
 					newLastButton.addActionListener(this);
+					newLastButton.addMouseListener(new BlackImageButtonMouseListener(gui));
 					gui.blackImagesImageButtons.add(newLastButton);
 					gui.blackImagesJPanel.add(gui.blackImagesImageButtons.get(gui.blackImagesImageButtons.size() - 1),
 							gui.blackImagesButtonConstraints);

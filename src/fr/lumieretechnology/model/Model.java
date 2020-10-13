@@ -97,9 +97,10 @@ public class Model {
 
 		System.out.println("DONE ............");
 
-		System.out.println("Press \"ENTER\" to exit...");
-		Scanner scanner = new Scanner(System.in);
-		scanner.nextLine();
+		//Whithout GUI, the terminal close itself. Better let the user close it whenever he wants
+//		System.out.println("Press \"ENTER\" to exit...");
+//		Scanner scanner = new Scanner(System.in);
+//		scanner.nextLine();
 
 	}
 
@@ -158,9 +159,10 @@ public class Model {
 
 		System.out.println("DONE ............");
 
-		System.out.println("Press \"ENTER\" to exit...");
-		Scanner scanner = new Scanner(System.in);
-		scanner.nextLine();
+		//Whithout GUI, the terminal close itself. Better let the user close it whenever he wants
+//		System.out.println("Press \"ENTER\" to exit...");
+//		Scanner scanner = new Scanner(System.in);
+//		scanner.nextLine();
 
 	}
 

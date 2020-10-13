@@ -9,6 +9,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -24,6 +27,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -32,8 +36,12 @@ import javax.swing.filechooser.FileFilter;
 import org.opencv.core.Core;
 
 import fr.lumieretechnology.controller.BlackImageButtonListener;
+import fr.lumieretechnology.controller.BlackImageButtonMouseListener;
 import fr.lumieretechnology.controller.ImageButton;
 import fr.lumieretechnology.controller.ImageButtonListener;
+import fr.lumieretechnology.controller.ImageButtonMouseListener;
+import fr.lumieretechnology.controller.ImageRemoveListener;
+import fr.lumieretechnology.controller.SaveToListener;
 import fr.lumieretechnology.model.ImageMat;
 import fr.lumieretechnology.model.Model;
 
@@ -65,7 +73,6 @@ public class MainFrame {
 	public GridBagConstraints imagesJLabelConstraints = new GridBagConstraints();
 	public GridBagConstraints imagesButtonConstraints = new GridBagConstraints();
 
-
 	// CENTER-EAST
 	public JPanel blackImagesJPanel = new JPanel();
 	public GridBagLayout blackImagesBagLayout = new GridBagLayout();
@@ -74,7 +81,6 @@ public class MainFrame {
 	public GridBagConstraints blackImagesJLabelConstraints = new GridBagConstraints();
 	public GridBagConstraints blackImagesButtonConstraints = new GridBagConstraints();
 
-	
 	// EAST
 	public JPanel resultJPanel = new JPanel();
 	public GridBagLayout resultBagLayout = new GridBagLayout();
@@ -94,8 +100,8 @@ public class MainFrame {
 		mainJFrame.setSize((int) (GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint().getX() * 1.5d),
 				(int) (GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint().getY() * 1.5d));
 
-		System.out.println(mainJFrame.getSize().height + " " + mainJFrame.getSize().getWidth());
-		System.out.println(mainJFrame.getLocation().getX() + " " + mainJFrame.getLocation().getY());
+//		System.out.println(mainJFrame.getSize().height + " " + mainJFrame.getSize().getWidth());
+//		System.out.println(mainJFrame.getLocation().getX() + " " + mainJFrame.getLocation().getY());
 
 		mainJFrame.setLayout(mainBorderLayout);
 
@@ -121,11 +127,18 @@ public class MainFrame {
 	private void initMenuBar() {
 		mainJFrame.add(menuBar, BorderLayout.NORTH);
 
+		// FILE
 		menuBar.add(fileJMenu);
 		fileJMenu.add(addItem);
-		fileJMenu.add(addBlackItem);
-		fileJMenu.add(saveToItem);
+		addItem.addActionListener(new ImageButtonListener(this));
 
+		fileJMenu.add(addBlackItem);
+		addBlackItem.addActionListener(new BlackImageButtonListener(this));
+
+		fileJMenu.add(saveToItem);
+		saveToItem.addActionListener(new SaveToListener(this));
+
+		// OPTION
 		menuBar.add(optionJMenu);
 		optionJMenu.add(blackSubstractCorrectionItem);
 		blackSubstractCorrectionItem.addActionListener(new ActionListener() {
@@ -139,6 +152,7 @@ public class MainFrame {
 			}
 		});
 
+		// HELP
 		menuBar.add(helpJMenu);
 		helpJMenu.add(noticeItem);
 		helpJMenu.add(aboutItem);
@@ -154,7 +168,7 @@ public class MainFrame {
 		imagesJPanel.setLayout(imagesBagLayout);
 
 		// Label
-		
+
 		imagesJLabelConstraints.gridx = 0;
 		imagesJLabelConstraints.fill = GridBagConstraints.BOTH;
 		imagesJLabelConstraints.anchor = GridBagConstraints.CENTER;
@@ -171,6 +185,7 @@ public class MainFrame {
 		imagesJPanel.add(imagesImageButtons.get(0), imagesButtonConstraints);
 
 		imagesImageButtons.get(0).addActionListener(new ImageButtonListener(this));
+		imagesImageButtons.get(0).addMouseListener(new ImageButtonMouseListener(this));
 
 	}
 
@@ -201,7 +216,8 @@ public class MainFrame {
 		blackImagesJPanel.add(blackImagesImageButtons.get(0), blackImagesButtonConstraints);
 
 		blackImagesImageButtons.get(0).addActionListener(new BlackImageButtonListener(this));
-
+		blackImagesImageButtons.get(0).addMouseListener(new BlackImageButtonMouseListener(this));
+		
 		blackImagesImageButtons.get(0).setEnabled(blackSubstractCorrectionItem.isSelected());
 
 	}
